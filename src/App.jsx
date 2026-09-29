@@ -7,10 +7,12 @@ import CreateQR from "./pages/CreateQR";
 import MyQR from "./pages/MyQR";
 import Profile from "./pages/Profile";
 import LinksPage from "./pages/LinksPage";
+import TextPage from "./pages/TextPage";
 
 function App() {
   return (
     <Routes>
+        <Route path="/text/:id" element={<TextPage />} />
       <Route path="/links/:id" element={<LinksPage />} />
       <Route path="/multilink" element={<MultiLink />} />
       <Route path="/" element={<Login />} />

@@ -6,10 +6,11 @@ function LinksPage() {
   const { id } = useParams();
 
   const [data, setData] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadLinks();
-  }, []);
+  }, [id]);
 
   async function loadLinks() {
     const { data, error } = await supabase
@@ -18,9 +19,39 @@ function LinksPage() {
       .eq("id", id)
       .single();
 
-    if (!error) {
-      setData(data);
+    if (error) {
+      console.log("Supabase error:", error);
+      setError(error.message);
+      return;
     }
+
+    setData(data);
+  }
+
+  // Add https:// if user didn't enter it
+  function makeUrl(url) {
+    if (!url) return "#";
+
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+
+    return `https://${url}`;
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "100px",
+          color: "red",
+        }}
+      >
+        <h2>Unable to load links</h2>
+        <p>{error}</p>
+      </div>
+    );
   }
 
   if (!data) {
@@ -43,31 +74,81 @@ function LinksPage() {
       }}
     >
       <div style={{ width: "350px" }}>
-        <h1 style={{ textAlign: "center" }}>{data.title}</h1>
+        <h1 style={{ textAlign: "center" }}>
+          {data.title}
+        </h1>
 
-        <a href={data.website} target="_blank">
-          <button style={{ width: "100%", marginTop: "20px" }}>
-            🌐 Website
-          </button>
-        </a>
+        {data.website && (
+          <a
+            href={makeUrl(data.website)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                padding: "12px",
+              }}
+            >
+              🌐 Website
+            </button>
+          </a>
+        )}
 
-        <a href={data.linkedin} target="_blank">
-          <button style={{ width: "100%", marginTop: "20px" }}>
-            💼 LinkedIn
-          </button>
-        </a>
+        {data.linkedin && (
+          <a
+            href={makeUrl(data.linkedin)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                padding: "12px",
+              }}
+            >
+              💼 LinkedIn
+            </button>
+          </a>
+        )}
 
-        <a href={data.github} target="_blank">
-          <button style={{ width: "100%", marginTop: "20px" }}>
-            💻 GitHub
-          </button>
-        </a>
+        {data.github && (
+          <a
+            href={makeUrl(data.github)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                padding: "12px",
+              }}
+            >
+              💻 GitHub
+            </button>
+          </a>
+        )}
 
-        <a href={data.instagram} target="_blank">
-          <button style={{ width: "100%", marginTop: "20px" }}>
-            📷 Instagram
-          </button>
-        </a>
+        {data.instagram && (
+          <a
+            href={makeUrl(data.instagram)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                padding: "12px",
+              }}
+            >
+              📷 Instagram
+            </button>
+          </a>
+        )}
       </div>
     </div>
   );
